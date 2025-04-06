@@ -1,0 +1,35 @@
+﻿@page
+@model WebApplication2.Models.Klient
+@{
+<form asp-controller="Home" asp-action="Mail" method="post">
+    <div class="form-group">
+        <label for="imie">Imie</label>
+        <input type="text" id="imie" name="imie" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="nazwisko">Nazwisko</label>
+        <input type="text" id="nazwisko" name="nazwisko" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="adres">Adres</label>
+        <input type="text" id="adres" name="adres" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="login">Login</label>
+        <input type="text" id="login" name="login" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="email">Email</label>
+        <input type="text" id="email" name="email" class="form-control" required />
+    </div>
+
+    <div class="form-group">
+        <label for="text">Haslo</label>
+        <input type="text" id="Haslo" name="Haslo" class="form-control" required />
+    </div>
+        <button type="submit" class="btn btn-primary">Zaloz konto</button>
+</form>}

@@ -1,0 +1,39 @@
+﻿@model WebApplication2.Models.Produkt
+@{
+    ViewData["Title"] = "Dodaj Produkt";
+}
+
+<h1>@ViewData["Title"]</h1>
+
+
+
+<form asp-action="AddProdukt" method="post">
+    <div class="form-group">
+        <label for="Nazwa">Nazwa Produktu</label>
+        <input type="text" class="form-control" id="Nazwa" name="Nazwa" required />
+    </div>
+    <div class="form-group">
+        <label for="Producent">Producent</label>
+        <input type="text" class="form-control" id="Producent" name="Producent" required />
+    </div>
+    <div class="form-group">
+        <label for="Cena">Cena</label>
+        <input type="number" class="form-control" id="Cena" name="Cena" step="0.01" required />
+    </div>
+    <div class="form-group">
+        <label for="Ilosc">Ilość</label>
+        <input type="number" class="form-control" id="Ilosc" name="Ilosc" required />
+    </div>
+    <div class="form-group">
+        <label for="Kategoria">Kategoria</label>
+        <input type="text" class="form-control" id="Kateogria" name="Kategoria" required />
+    </div>
+    <div class="form-group">
+        <label for="Opis">Opis</label>
+        <input type="text" class="form-control" id="Opis" name="Opis" required />
+    </div>
+   
+    <button type="submit" class="btn btn-primary">Dodaj Produkt</button>
+</form>
+
+

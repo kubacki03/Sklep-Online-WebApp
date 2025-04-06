@@ -1,0 +1,164 @@
+﻿@model IEnumerable<WebApplication2.Models.Produkt>
+<head>
+    <link rel="stylesheet" href="css/style.css">
+
+</head>
+@{
+    ViewData["Title"] = "Lista Produktów";
+}
+@if (ViewBag.Klient != null)
+{
+    <h2>Witaj, @ViewBag.Klient.Imie!</h2>
+}
+
+
+<nav>
+    <div style="display: flex; justify-content: space-between; align-items: center;">
+     
+        <div class="dropdown" style="margin-right: auto;">
+            <button class="dropdown-button">Kategorie</button>
+            <div class="dropdown-content">
+                <a href="@Url.Action("Index", "Home")">Wszystkie produkty</a>
+                <a href="@Url.Action("poKategori", "Home", new { kategoria = "Telefony" })">Telefony</a>
+                <a href="@Url.Action("poKategori", "Home", new { kategoria = "Laptopy" })">Laptopy</a>
+                <a href="@Url.Action("poKategori", "Home", new { kategoria = "Muzyka" })">Muzyka</a>
+                <a href="@Url.Action("poKategori", "Home", new { kategoria = "Tablety" })">Tablety</a>
+                <a href="@Url.Action("poKategori", "Home", new { kategoria = "Programowanie" })">Programowanie</a>
+                <a href="@Url.Action("poKategori", "Home", new { kategoria = "Podzespoły" })">Podzespoły</a>
+            </div>
+        </div>
+
+      
+        <ul style="list-style: none; padding: 0; display: flex; gap: 10px; margin-left: auto;">
+            @if (ViewBag.Klient != null)
+            {
+                <li><a href="@Url.Action("PokazLogowanie", "Home")">Przelacz konto</a></li>
+                <li><a href="@Url.Action("Wyloguj", "Home")">Wyloguj</a></li>
+                <li><a href="@Url.Action("pokazHistorie", "Home")">Historia</a></li>
+            }
+            else
+            {
+                <li><a href="@Url.Action("PokazLogowanie", "Home")">Zaloguj sie</a></li>
+            }
+            <li><a href="@Url.Action("Koszyk", "Home")">Koszyk</a></li>
+
+            <form action="@Url.Action("poNazwie", "Home")" method="get" style="margin-left: auto; display: flex; align-items: center;">
+                <input type="text" name="nazwa" placeholder="Wyszukaj produkty" style="padding: 5px; font-size: 1rem;" />
+                <button type="submit" class="btn btn-primary" style="padding: 5px 10px; font-size: 1rem;">Szukaj</button>
+            </form>
+        </ul>
+    </div>
+</nav>
+
+<div class="slideshow-container">
+
+    <div class="mySlides fade">
+        
+        <img src="/images/pic1.jpg" style="width:100%">
+        
+    </div>
+
+    <div class="mySlides fade">
+       
+        <img src="/images/pic2.jpg" style="width:100%">
+     
+    </div>
+
+    <div class="mySlides fade">
+      
+        <img src="/images/pic3.jpg" style="width:100%">
+     
+    </div>
+
+</div>
+<h2>@(ViewData["Category"] ?? "Wszystkie produkty")</h2>
+<div class="products-grid">
+    @foreach (var produkt in Model)
+    {
+        <div class="product-card">
+            <img src="~/images/p@(produkt.IdProduktu.ToString()).jpg" alt="Zdjęcie produktu" class="product-image" />
+
+            <h3>@produkt.Nazwa</h3>
+            <p>Producent: @produkt.Producent</p>
+            <p>Opis: @produkt.Opis</p>
+
+            @if (ViewBag.IdProduktuZnizka != null && (int)ViewBag.IdProduktuZnizka == produkt.IdProduktu)
+            {
+                <p>
+                    Cena:
+                    <span style="text-decoration: line-through; color: red;">
+                        @produkt.Cena zł
+                    </span>
+                    <span style="color: green; font-weight: bold;">
+                        @String.Format("{0:0.00}", produkt.Cena * (1 - (double)ViewBag.Znizka)) zł
+                    </span>
+
+                </p>
+            }
+            else
+            {
+                <p>Cena: @produkt.Cena zł</p>
+            }
+
+            <p>Ilość dostępna: @produkt.Ilosc</p>
+            <form asp-action="AddToCart" method="post">
+                <input type="hidden" name="idProduktu" value="@produkt.IdProduktu" />
+                <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    <button type="button" class="btn btn-secondary" onclick="updateQuantity(this, -1)" @(produkt.Ilosc == 0 ? "disabled" : "") style="background: DarkSlateBlue">
+                        -
+                    </button>
+                    <input type="number"
+                           class="form-control"
+                           name="ilosc"
+                           min="1"
+                           max="@produkt.Ilosc"
+                           value="1"
+                           readonly
+                           style="width: 60px; text-align: center;" />
+                    <button type="button" class="btn btn-secondary" onclick="updateQuantity(this, 1)" @(produkt.Ilosc == 0 ? "disabled" : "") style="background-color: mediumaquamarine">
+                        +
+                    </button>
+                </div>
+                <button type="submit" class="btn btn-primary mt-2" @(produkt.Ilosc == 0 ? "disabled" : "")>
+                    Dodaj do koszyka
+                </button>
+            </form>
+
+        </div>
+    }
+</div>
+
+<script>
+         let slideIndex = 0;
+    showSlides();
+
+    function showSlides() {
+      let i;
+      let slides = document.getElementsByClassName("mySlides");
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";  
+      }
+      slideIndex++;
+      if (slideIndex > slides.length) { slideIndex = 1 } 
+      slides[slideIndex - 1].style.display = "block";  
+      setTimeout(showSlides, 4000);
+    }
+
+    function updateQuantity(button, increment) {
+      
+        const quantityInput = button.parentElement.querySelector('input[name="ilosc"]');
+        const currentValue = parseInt(quantityInput.value, 10);
+        const min = parseInt(quantityInput.min, 10);
+        const max = parseInt(quantityInput.max, 10);
+
+       
+        let newValue = currentValue + increment;
+        if (newValue < min) newValue = min;
+        if (newValue > max) newValue = max;
+
+     
+        quantityInput.value = newValue;
+    }
+
+
+</script>

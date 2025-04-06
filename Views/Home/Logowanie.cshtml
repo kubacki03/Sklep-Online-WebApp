@@ -1,0 +1,89 @@
+﻿@{
+    Layout = "_Layout";
+}
+
+<head>
+    <style>
+       
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+       
+        label {
+            font-size: 1.1rem;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+       
+        .btn {
+            width: 100%;
+            padding: 10px;
+            font-size: 1rem;
+            margin-top: 10px;
+        }
+
+       
+        h1 {
+            font-size: 1.5rem;
+            color: #333;
+            margin-top: 20px;
+        }
+
+       
+        p {
+            font-size: 1rem;
+            color: #555;
+        }
+
+       
+        a {
+            display: block;
+            margin-top: 15px;
+        }
+
+       
+        .alert-danger {
+            margin-top: 20px;
+        }
+
+       
+        p i {
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<form asp-action="Zaloguj" asp-controller="Home" method="post">
+    <div class="form-group">
+        <label for="login">Login lub email</label>
+        <input type="text" id="login" name="login" class="form-control" required />
+    </div>
+    <div class="form-group">
+        <label for="password">Haslo</label>
+        <input type="password" id="password" name="password" class="form-control" required />
+    </div>
+    <div class="form-group mt-3">
+        <button type="submit" class="btn btn-primary">Zaloguj</button>
+    </div>
+</form>
+
+<h1>Nie masz konta? Załóż je!</h1>
+<p>Dlaczego warto je mieć</p>
+<p>&#128187 zamawiaj szybciej</p>
+<p>&#128209 sprawdzaj poprzednie zamówienia</p>
+<p>&#128081 korzystaj z indywidualnych promocji</p>
+
+<a href="@Url.Action("PokazRejestrowanie", "Home")" class="btn btn-primary">Rejestruj się</a>
+<a href="@Url.Action("Index", "Home")" class="btn btn-primary">Wróć</a>
+
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="alert alert-danger">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}

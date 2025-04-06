@@ -1,0 +1,140 @@
+﻿@model List<WebApplication2.Models.Zamowienie>
+
+
+    <style>
+    nav {
+        background-color: #007bff;
+        padding: 10px 20px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+        nav ul {
+            list-style-type: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: flex-end;
+        }
+
+            nav ul a {
+                color: #fff;
+                text-decoration: none;
+                margin: 0 10px;
+                font-size: 1em;
+                font-weight: bold;
+                transition: color 0.3s ease;
+            }
+
+                nav ul a:hover {
+                    color: #ffd700;
+                }
+
+    .discount-btn {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #28a745;
+        color: #fff;
+        text-decoration: none;
+        border-radius: 5px;
+        font-weight: bold;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        .discount-btn:hover {
+            background-color: #218838;
+            transform: scale(1.05);
+        }
+    </style>
+
+<nav>
+    <ul style="list-style: none; padding: 0; display: flex; gap: 10px;">
+
+     
+            <a href="@Url.Action("Wyloguj", "Home")">Wyloguj</a>
+        <a href="@Url.Action("Koszyk", "Home")">Koszyk</a>
+        <li><a href="@Url.Action("Index", "Home")">Wszystkie produkty</a></li>
+      
+    </ul>
+</nav>
+@{
+    ViewData["Title"] = "Zamówienia klienta";
+}
+
+@if (Model.Any())
+{
+    @if (ViewData["Znizka"] != null && ViewData["Produkt"] != null && ViewData["NowaCena"] != null)
+    {
+        <div class="alert alert-success">
+            <h4>Wylosowana Zniżka!</h4>
+            <p><strong>Produkt:</strong> @ViewData["Produkt"]</p>
+            <p><strong>Wartość zniżki:</strong> @(ViewData["Znizka"])%</p>
+            <p><strong>Nowa cena:</strong> @(ViewData["NowaCena"]) PLN</p>
+        </div>
+    }
+    else
+    {
+        <div style="text-align: center;">
+            <a href="@Url.Action("LosujZnizke", "Home")" class="discount-btn">
+                <i class="fas fa-gift"></i> Wylosuj zniżkę
+            </a>
+        </div>
+    }
+
+
+
+<div class="container mt-4">
+    <h2 class="text-center mb-4">@ViewData["Title"]</h2>
+
+    @if (ViewData["Message"] != null)
+    {
+        <div class="alert alert-warning">
+            @ViewData["Message"]
+        </div>
+    }
+
+    @foreach (var zamowienie in Model)
+    {
+        <div class="order-card mb-5 p-4 border rounded shadow-sm">
+            <h3 class="text-primary">Zamówienie ID: @zamowienie.IdZamowienia</h3>
+            <p><strong>Data:</strong> @zamowienie.Data.ToString("dd-MM-yyyy")</p>
+            <p><strong>Koszt całkowity:</strong> @zamowienie.Koszt PLN</p>
+
+            <h4 class="mt-3">Produkty w zamówieniu:</h4>
+
+            @if (zamowienie.ProduktZamowienia != null && zamowienie.ProduktZamowienia.Any())
+            {
+                <table class="table table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>Nazwa</th>
+                            <th>Producent</th>
+                            <th>Ilość</th>
+                            <th>Cena</th>
+                            <th>Łączna cena</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var produktZamowienie in zamowienie.ProduktZamowienia)
+                        {
+                            <tr>
+                                <td>@produktZamowienie.Produkt.Nazwa</td>
+                                <td>@produktZamowienie.Produkt.Producent</td>
+                                <td>@produktZamowienie.Ilosc</td>
+                                <td>@produktZamowienie.Produkt.Cena</td>
+                                <td>@(produktZamowienie.Ilosc * produktZamowienie.Produkt.Cena)</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+            else
+            {
+                <p>Brak produktów w tym zamówieniu.</p>
+            }
+        </div>
+    }
+</div>
+}else{
+    <p>Brak transkacji</p>
+}
+<link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">

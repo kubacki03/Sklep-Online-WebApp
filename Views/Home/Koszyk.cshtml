@@ -1,0 +1,123 @@
+﻿@model Dictionary<WebApplication2.Models.Produkt, int>
+
+@{
+    ViewData["Title"] = "Koszyk";
+}
+<nav>
+    <ul>
+        <a href="@Url.Action("Index", "Home")">Powrót do listy produktów</a>
+    </ul>
+</nav>
+<h1>@ViewData["Title"]</h1>
+
+<style>
+    
+    nav {
+    background-color: #007bff;
+    padding: 10px 20px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    nav ul {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: flex-end;
+    }
+
+    nav ul a {
+    color: #fff;
+    text-decoration: none;
+    margin: 0 10px;
+    font-size: 1em;
+    font-weight: bold;
+    transition: color 0.3s ease;
+    }
+
+    nav ul a:hover {
+    color: #ffd700;
+    }
+</style>
+
+@if (Model.Any())
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Nazwa</th>
+                <th>Producent</th>
+                <th>Cena jednostkowa</th>
+                <th>Ilość</th>
+               
+                <th>Akcje</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>@item.Key.IdProduktu</td>
+                    <td>@item.Key.Nazwa</td>
+                    <td>@item.Key.Producent</td>
+                    <td>@item.Key.Cena.ToString("F2") zł</td>
+                    <td>@item.Value</td>
+                   
+                    <td>
+                        <form asp-action="ZwiekszIlosc" method="post" style="display:inline;">
+                            <input type="hidden" name="ilosc" value="1" max="@item.Key.Ilosc" min="1" />
+                            <input type="hidden" name="idProduktu" value="@item.Key.IdProduktu" />
+                            <button type="submit" class="btn btn-success btn-sm"
+                            @(item.Value >= item.Key.Ilosc ? "disabled" : "")>
+                                +
+                            </button>
+                        </form>
+                        <form asp-action="ZmniejszIlosc" method="post" style="display:inline;">
+                            <input type="hidden" name="ilosc" value="1" min="1" />
+                            <input type="hidden" name="idProduktu" value="@item.Key.IdProduktu" />
+                            <button type="submit" class="btn btn-warning btn-sm">-</button>
+                        </form>
+
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <p><strong>Całkowita kwota do zapłaty:</strong> @Model.Sum(item => item.Key.Cena * item.Value).ToString("F2") zł</p>
+
+
+    <form asp-controller="Payment" asp-action="CreateCheckoutSession" method="post">
+
+        @if(ViewData["Klient"]== null){
+        <div class="form-group">
+            <label for="Imie">Imie</label>
+            <input type="text" id="Imie" name="Imie" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="Nazwisko">Nazwisko</label>
+            <input type="text" id="Nazwisko" name="Nazwisko" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="Adres">Adres</label>
+            <input type="text" id="Adres" name="Adres" class="form-control" required />
+        </div>
+        <div class="form-group">
+            <label for="Email">Email</label>
+            <input type="email" id="Email" name="Email" class="form-control" required />
+        </div>
+        }
+        <button type="submit" class="btn btn-primary">Zapłać teraz</button>
+    </form>
+
+
+
+    <form style="padding:5px" asp-action="UsunKoszyk" method="post">
+        <button type="submit" class="btn btn-danger">Usuń koszyk</button>
+    </form>
+}
+else
+{
+    <p>Twój koszyk jest pusty.</p>
+}
+
